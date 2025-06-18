@@ -16,11 +16,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up proxy for docker buildx
-        run: |
-          echo http_proxy=${http_proxy} >> $GITHUB_ENV
-          echo https_proxy=${https_proxy} >> $GITHUB_ENV
-          echo no_proxy=${no_proxy} >> $GITHUB_ENV
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Log in to GitHub Container Registry
