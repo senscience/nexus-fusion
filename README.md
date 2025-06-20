@@ -1,34 +1,12 @@
-> [!WARNING]
-> The Blue Brain Project concluded in December 2024, so development has ceased under the BlueBrain GitHub organization.
-> Future development will take place at: https://github.com/openbraininstitute/nexus-web
-
-<img src="docs/assets/Blue-Brain-Nexus-Fusion-Github-banner.jpg"/>
-
 # Nexus Fusion
-
-> Note: expect this repo to be renamed to <https://github.com/BlueBrain/nexus-fusion> to match the new application name and Nexus component branding scheme.
-
-<p align="center">
-  <img alt="Build Status" src="https://github.com/BlueBrain/nexus-web/workflows/Review/badge.svg">
-  <a href="https://codecov.io/gh/BlueBrain/nexus-web">
-    <img src="https://codecov.io/gh/BlueBrain/nexus-web/branch/master/graph/badge.svg" alt="Coverage Status">
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=bluebrainnexus">
-    <img alt="Follow on Twitter" src="https://img.shields.io/twitter/follow/bluebrainnexus.svg?style=social&label=Follow">
-  </a>
-</p>
 
 <p align="center">Nexus Fusion (previously Nexus Web) is the interface of Blue Brain Nexus, the open-source knowledge graph for data-driven science.</p>
 
 <p align="center">
-  <a href="https://bluebrainnexus.io/docs/">Blue Brain Nexus Docs</a> |
+  <a href="https://senscience.github.io/nexus-delta/docs/">Blue Brain Nexus Docs</a> |
   <a href="#Development">Development</a> |
   <a href="#studios-feature">Studios</a>
 </p>
-
-## Contributing
-
-Learn how we use git [in the wiki](https://github.com/BlueBrain/nexus-web/wiki/Git-Flow)
 
 ## Development
 
@@ -98,7 +76,7 @@ node dist/server.js
 ## Build a Docker image
 
 ```sh
-docker build . --tag=nexus-web
+docker build . --tag=nexus-fusion
 ```
 
 ## ENV variables list
@@ -126,34 +104,36 @@ You can find out how to deploy a build [in the wiki](https://github.com/BlueBrai
 
 ## Documentation
 
-The documentation for Nexus Fusion can be found in the [product docs](https://bluebrainnexus.io/docs/fusion/index.html).
+The documentation for Nexus Fusion can be found in the [product docs](https://senscience.github.io/nexus-delta/docs/fusion/index.html).
 
-> Read more about the Fusion [Architecture](https://bluebrainnexus.io/docs/fusion/architecture.html).
+> Read more about the Fusion [Architecture](https://senscience.github.io/nexus-delta/docs/fusion/architecture.html).
 
-### Resource-level [Plugins](https://bluebrainnexus.io/docs/fusion/plugins.html)
+### Resource-level [Plugins](https://senscience.github.io/nexus-delta/docs/fusion/plugins.html)
 
 A core component of Studio is the ability for data curators to develop a domain-specific presentation layer for their resources in Nexus Fusion. This allows data consumers to visualize their datasets using graphs, charts, or 3D visualizations, and to present the relevant metadata to the user.
 
 Plugins are developed using Javascript and are loaded into the Nexus Fusion instance from the /plugins folder.
 
-### [Studios](https://bluebrainnexus.io/docs/fusion/studio.html) Subapp
+### [Studios](https://senscience.github.io/nexus-delta/docs/fusion/studio.html) Subapp
 
 Studios space allows data curators to display their data using customisable, persistent queries. Using custom plugins developed with JavaScript, data curators can format the presentation of the query results any way they like.
 
-### [Admin](https://bluebrainnexus.io/docs/fusion/admin.html) Subapp
+### [Admin](https://senscience.github.io/nexus-delta/docs/fusion/admin.html) Subapp
 
 The Nexus Fusion admin app allows you to manage your Nexus Delta instance.
 
-> Learn how to [Add Your Own App](https://bluebrainnexus.io/docs/fusion/add-your-own-app.html)
+> Learn how to [Add Your Own App](https://senscience.github.io/nexus-delta/docs/fusion/add-your-own-app.html)
 
 ## Getting involved
 
-Issue tracking is centralized into [the main Blue Brain Nexus repository](https://github.com/BlueBrain/nexus).
+Issue tracking is centralized into [the main Blue Brain Nexus repository](https://github.com/senscience/nexus-delta).
 
 There are several channels provided to address different issues:
 
-- **Feature request**: If there is a feature you would like to see in this application, please first consult the [list of open feature requests](https://github.com/BlueBrain/nexus/issues?q=is%3Aopen+is%3Aissue+label%3Afeature+label%3Afrontend+label%3Anexus-web). In case there isn't already one, please [open a feature request](https://github.com/BlueBrain/nexus/issues/new?labels=feature,frontend,nexus-web) describing your feature with as much detail as possible.
-- **Bug report**: If you have found a bug, please create an issue [here](https://github.com/BlueBrain/nexus/issues/new?labels=bug,frontend,nexus-web).
+- **Feature request**: If there is a feature you would like to see in this application,
+  please first consult the [list of open feature requests](https://github.com/senscience/nexus-delta/issues?q=is%3Aopen+is%3Aissue+label%3Afeature+label%3Afrontend+label%3Anexus-fusion).
+  In case there isn't already one, please [open a feature request](https://github.com/senscience/nexus-delta/issues/new?labels=feature,frontend,nexus-fusion) describing your feature with as much detail as possible.
+- **Bug report**: If you have found a bug, please create an issue [here](https://github.com/senscience/nexus-delta/issues/new?labels=bug,frontend,nexus-fusion).
 
 ## Development Tips
 
@@ -170,4 +150,5 @@ There are several channels provided to address different issues:
 
 The development of this software was supported by funding to the Blue Brain Project, a research center of the École polytechnique fédérale de Lausanne (EPFL), from the Swiss government's ETH Board of the Swiss Federal Institutes of Technology.
 
-Copyright © 2015-2023 Blue Brain Project/EPFL
+Copyright © 2015-2024 Blue Brain Project/EPFL
+Copyright © 2025 Senscience
