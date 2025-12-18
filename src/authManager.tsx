@@ -20,7 +20,7 @@ export const getUserManager = (
 ): UserManager | undefined => {
   const {
     auth: { realms },
-    config: { clientId, redirectHostName, preferredRealm },
+    config: { clientId, redirectHostName, preferredRealm, scope },
   } = state;
   const availableRealms: Realm[] =
     (realms && realms.data && realms.data._results) || [];
@@ -39,7 +39,7 @@ export const getUserManager = (
     return undefined;
   }
 
-  const cacheKey = `${realm._label}||${realm._issuer}||${clientId}||${redirectHostName}`;
+  const cacheKey = `${realm._label}||${realm._issuer}||${clientId}||${redirectHostName}||${scope || 'default'}`;
   const oidcConfig = Object.freeze({
     authority: realm._issuer,
     response_type: 'id_token token',
@@ -52,6 +52,7 @@ export const getUserManager = (
     includeIdTokenInSilentRenew: false,
     // silentRefreshShowIFrame: true,
     userStore: new WebStorageStateStore({ store: window.localStorage }),
+    ...(scope && { scope }),
     ...realm,
   });
   userManagerCache.has(cacheKey) ||
