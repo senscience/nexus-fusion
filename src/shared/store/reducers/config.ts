@@ -9,6 +9,7 @@ export interface ConfigState {
   clientId: string;
   redirectHostName: string;
   preferredRealm?: string;
+  scope?: string;
   serviceAccountsRealm: string;
   sentryDsn?: string;
   pluginsManifestPath: string;

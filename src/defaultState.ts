@@ -55,6 +55,7 @@ const preloadedState: RootState = {
     basePath: base,
     clientId: process.env.CLIENT_ID || 'bbp-nise-dev-nexus-fusion',
     redirectHostName: '/',
+    scope: process.env.SCOPE,
     serviceAccountsRealm:
       process.env.SERVICE_ACCOUNTS_REALM || DEFAULT_SERVICE_ACCOUNTS_REALM,
     sentryDsn: process.env.SENTRY_DSN,
