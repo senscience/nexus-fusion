@@ -8,7 +8,7 @@ import React, {
 import { useRouteMatch } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useInfiniteQuery, useQuery } from 'react-query';
-import { InputRef, Input, Spin, Alert, List } from 'antd';
+import { InputRef, Input, Spin, Alert, List, Tag, Tooltip } from 'antd';
 import { capitalize } from 'lodash';
 import {
   LoadingOutlined,
@@ -27,7 +27,8 @@ import pluralize from 'pluralize';
 import { useOrganisationsSubappContext } from '../../subapps/admin';
 import { sortBackgroundColor } from '../StudiosPage/StudiosPage';
 import { ModalsActionsEnum } from '../../shared/store/actions/modals';
-import { DATA_SET_TYPE } from '../ProjectsPage/ProjectsPage';
+import { AggregationsResult } from '../../subapps/dataExplorer/DataExplorerUtils';
+import { labelOf } from '../../shared/utils';
 import {
   LoadMoreFooter,
   TSort,
@@ -158,14 +159,26 @@ const ProjectItem = ({
   nexus,
   toDelete,
 }: TProjectItem) => {
-  const { data } = useQuery({
-    queryKey: ['datesets', { orgLabel: organization, projectLabel: title }],
+  // Fetched once per rendered project (cached indefinitely). Projects are loaded a page at a time as the user
+  // scrolls, so this issues one aggregation request per project only as it enters the list.
+  const { data: aggregations, isFetching } = useQuery({
+    queryKey: [
+      'project-type-aggregations',
+      { orgLabel: organization, projectLabel: title },
+    ],
+    staleTime: Infinity,
     queryFn: () =>
       nexus.Resource.list(organization, title, {
-        type: DATA_SET_TYPE,
+        aggregations: true,
       }),
+    select: result => {
+      const aggregationsResult = (result as unknown) as AggregationsResult;
+      return {
+        total: aggregationsResult.total ?? 0,
+        types: aggregationsResult.aggregations?.types?.buckets ?? [],
+      };
+    },
   });
-  const datasets = data?._total;
   return (
     <List.Item className="route-result-list_item">
       <div
@@ -197,12 +210,41 @@ const ProjectItem = ({
               )}
             </h3>
           </Link>
-          <p>{description}</p>
+          {description && <p>{description}</p>}
+          <div className="project-types">
+            {isFetching || !aggregations ? (
+              <Spin size="small" />
+            ) : aggregations.types.length > 0 ? (
+              <div className="project-types_tags">
+                {aggregations.types.map(bucket => (
+                  <Tooltip key={bucket.key} title={bucket.key}>
+                    <Tag className="project-type-tag">
+                      {labelOf(bucket.key)}
+                      <span
+                        className="project-type-count"
+                        style={{ marginLeft: 6, opacity: 0.65 }}
+                      >
+                        {formatNumber(bucket.doc_count)}
+                      </span>
+                    </Tag>
+                  </Tooltip>
+                ))}
+              </div>
+            ) : (
+              <span className="project-types_empty">No typed resources</span>
+            )}
+          </div>
         </div>
         <div className="statistics">
           <div className="statistics_item">
-            <div>Datasets</div>
-            <div>{(datasets && formatNumber(datasets)) ?? '0'}</div>
+            <div>Resources</div>
+            <div>
+              {isFetching || !aggregations ? (
+                <Spin size="small" />
+              ) : (
+                formatNumber(aggregations.total)
+              )}
+            </div>
           </div>
           <div className="statistics_item">
             <div>Last update</div>
@@ -212,7 +254,6 @@ const ProjectItem = ({
             <div>Created</div>
             <div>{timeago(createdAt)}</div>
           </div>
-          <div className="statistics_item" />
         </div>
         <div className="redirection">
           <Link to={to}>
