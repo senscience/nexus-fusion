@@ -51,7 +51,9 @@ export const getUserManager = (
     automaticSilentRenew: true,
     silent_redirect_uri: `${redirectHostName}/silent_refresh`,
     loadUserInfo: false,
-    includeIdTokenInSilentRenew: false,
+    // Include the current id token as `id_token_hint` on silent renew. Microsoft Entra requires it to identify
+    // the account silently (prompt=none in the refresh iframe);
+    includeIdTokenInSilentRenew: true,
     // silentRefreshShowIFrame: true,
     userStore: new WebStorageStateStore({ store: window.localStorage }),
     ...(scope && { scope }),
