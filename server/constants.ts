@@ -174,16 +174,6 @@ const getPreloadedState = ({ req, mode }: { req: Request; mode: TMode }) => ({
     sentryDsn: process.env.SENTRY_DSN,
     gtmCode: process.env.GTM_CODE,
     studioView: process.env.STUDIO_VIEW || '',
-    jiraUrl: process.env.JIRA_URL || '',
-    jiraResourceCustomFieldName: process.env.JIRA_RESOURCE_FIELD_NAME || '',
-    jiraResourceCustomFieldLabel:
-      process.env.JIRA_RESOURCE_FIELD_LABEL || 'Nexus Resource',
-    jiraProjectCustomFieldName: process.env.JIRA_PROJECT_FIELD_NAME || '',
-    jiraProjectCustomFieldLabel:
-      process.env.JIRA_PROJECT_FIELD_LABEL || 'Nexus Project',
-    ...(process.env.JIRA_SUPPORTED_REALMS && {
-      jiraSupportedRealms: process.env.JIRA_SUPPORTED_REALMS.split(','),
-    }),
     analysisPluginShowOnTypes: process.env.ANALYSIS_PLUGIN_SHOW_ON_TYPES
       ? process.env.ANALYSIS_PLUGIN_SHOW_ON_TYPES.split(',')
       : [],

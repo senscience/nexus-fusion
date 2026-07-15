@@ -36,10 +36,8 @@ import { getUpdateResourceFunction } from '../utils/updateResource';
 import ResourceViewActionsContainer from './ResourceViewActionsContainer';
 import ResourceMetadata from '../components/ResourceMetadata';
 import { ResourceLinkAugmented } from '../components/ResourceLinks/ResourceLinkItem';
-import JIRAPluginContainer from './JIRA/JIRAPluginContainer';
 import { RootState } from '../store/reducers';
 import { StudioResource } from '../../subapps/studioLegacy/containers/StudioContainer';
-import { useJiraPlugin } from '../hooks/useJIRA';
 import AnalysisPluginContainer from './AnalysisPlugin/AnalysisPluginContainer';
 import { UISettingsActionTypes } from '../../shared/store/actions/ui-settings';
 import {
@@ -86,23 +84,6 @@ const ResourceViewContainer: React.FunctionComponent<{
   const location = useLocation<{ background: Location }>();
   const [{ ref }] = useMeasure();
   const { data: pluginManifest } = usePlugins();
-  const { apiEndpoint } = useSelector((state: RootState) => state.config);
-
-  const [deltaPlugins, setDeltaPlugins] = React.useState<{
-    [key: string]: string;
-  }>();
-  const fetchDeltaVersion = async () => {
-    await nexus
-      .httpGet({
-        path: `${apiEndpoint}/version`,
-        context: { as: 'json' },
-      })
-      .then(versions => setDeltaPlugins({ ...versions.plugins }));
-  };
-
-  React.useEffect(() => {
-    fetchDeltaVersion();
-  }, []);
 
   const match = useRouteMatch<{
     orgLabel: string;
@@ -540,41 +521,6 @@ const ResourceViewContainer: React.FunctionComponent<{
         }}
       />
     );
-  const {
-    isUserInSupportedJiraRealm,
-    jiraInaccessibleBecauseOfVPN,
-  } = useJiraPlugin();
-
-  const jiraPlugin = resource &&
-    deltaPlugins &&
-    'jira' in deltaPlugins &&
-    isUserInSupportedJiraRealm &&
-    !jiraInaccessibleBecauseOfVPN && (
-      <Collapse
-        onChange={() => {
-          pluginCollapsedToggle('jira');
-        }}
-        activeKey={openPlugins.includes('jira') ? 'jira' : undefined}
-        items={[
-          {
-            key: 'jira',
-            label: 'JIRA',
-            children: (
-              <>
-                {openPlugins.includes('jira') && (
-                  <JIRAPluginContainer
-                    resource={resource}
-                    orgLabel={orgLabel}
-                    projectLabel={projectLabel}
-                  />
-                )}
-              </>
-            ),
-          },
-        ]}
-      />
-    );
-
   const { analysisPluginShowOnTypes, analysisPluginExcludeTypes } = useSelector(
     (state: RootState) => state.config
   );
@@ -629,7 +575,6 @@ const ResourceViewContainer: React.FunctionComponent<{
     },
     { key: 'admin', name: 'advanced', pluginComponent: adminPlugin },
     { key: 'video', name: 'video', pluginComponent: videoPlugin },
-    { key: 'jira', name: 'jira', pluginComponent: jiraPlugin },
     { key: 'analysis', name: 'Analysis', pluginComponent: analysisPlugin },
   ];
 

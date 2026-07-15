@@ -22,7 +22,6 @@ describe('AppInfo', () => {
     config: {
       apiEndpoint: 'https://localhost:3000',
       analysisPluginSparqlDataQuery: 'detailedCircuit',
-      jiraUrl: 'https://bbpteam.epfl.ch/project/devissues',
       httpHeaderForInaccessibleDueToVPN: 'x-requires-vpn',
     },
     auth: {
@@ -81,7 +80,6 @@ describe('AppInfo', () => {
       'composite-views': '1.8.0-M7',
       elasticsearch: '1.8.0-M7',
       'graph-analytics': '1.8.0-M7',
-      jira: '1.8.0-M7',
       search: '1.8.0-M7',
       storage: '1.8.0-M7',
     },

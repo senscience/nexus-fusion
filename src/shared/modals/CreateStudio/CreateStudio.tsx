@@ -291,12 +291,6 @@ const CreateStudio = () => {
         visible: false,
         expanded: false,
       },
-      {
-        key: 'jira',
-        name: 'Jira',
-        visible: false,
-        expanded: false,
-      },
     ];
     const otherAvailablePlugins = Object.keys(pluginManifest || {})
       .map(key => {

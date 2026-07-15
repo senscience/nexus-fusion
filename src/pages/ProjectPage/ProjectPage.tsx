@@ -11,7 +11,6 @@ import { Tabs, Popover, Empty } from 'antd';
 import { SelectOutlined } from '@ant-design/icons';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useOrganisationsSubappContext } from '../../subapps/admin';
-import { useJiraPlugin } from '../../shared/hooks/useJIRA';
 import { RootState } from '../../shared/store/reducers';
 import useNotification from '../../shared/hooks/useNotification';
 import ResourceListBoardContainer from '../../shared/containers/ResourceListBoardContainer';
@@ -20,7 +19,6 @@ import StoragesContainer from '../../subapps/admin/containers/StoragesContainer'
 import ProjectStatisticsContainer from '../../subapps/admin/containers/ProjectStatisticsContainer';
 import ProjectStatsContainer from '../../subapps/admin/containers/ProjectStatsContainer';
 import ProjectToDeleteContainer from '../../subapps/admin/containers/ProjectToDeleteContainer';
-import JiraPluginProjectContainer from '../../subapps/admin/containers/JiraContainer';
 import SettingsContainer from '../../subapps/admin/containers/SettingsContainer';
 import ViewStatisticsContainer from '../../subapps/admin/components/Views/ViewStatisticsProgress';
 import QueryEditor from '../../subapps/admin/components/Projects/QueryEditor';
@@ -64,8 +62,6 @@ const ProjectView: React.FunctionComponent = () => {
         return 'settings';
       case `${base}graph-analytics`:
         return 'graph-analytics';
-      case `${base}jira`:
-        return 'jira';
     }
     return 'browse';
   };
@@ -89,8 +85,6 @@ const ProjectView: React.FunctionComponent = () => {
         return `${base}settings`;
       case 'graph-analytics':
         return `${base}graph-analytics`;
-      case 'jira':
-        return `${base}jira`;
     }
     return `${base}browse`;
   };
@@ -204,11 +198,6 @@ const ProjectView: React.FunctionComponent = () => {
     if (activeKey === 'studios' || activeKey === 'workflows') return;
     history.push(pathFromTab(activeKey));
   };
-
-  const {
-    isUserInSupportedJiraRealm,
-    jiraInaccessibleBecauseOfVPN,
-  } = useJiraPlugin();
 
   return (
     <div className="project-view">
@@ -352,23 +341,6 @@ const ProjectView: React.FunctionComponent = () => {
                     />
                   ),
                 },
-                ...(deltaPlugins &&
-                'jira' in deltaPlugins &&
-                isUserInSupportedJiraRealm &&
-                !jiraInaccessibleBecauseOfVPN
-                  ? [
-                      {
-                        key: 'jira',
-                        label: 'Jira',
-                        children: (
-                          <JiraPluginProjectContainer
-                            orgLabel={orgLabel}
-                            projectLabel={projectLabel}
-                          />
-                        ),
-                      },
-                    ]
-                  : []),
                 ...(deltaPlugins && 'graph-analytics' in deltaPlugins
                   ? [
                       {

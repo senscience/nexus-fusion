@@ -74,10 +74,6 @@ const StudioEditorForm: React.FC<{
         key: 'admin',
         name: 'Advanced',
       },
-      {
-        key: 'jira',
-        name: 'Jira',
-      },
     ];
 
     /* update studio configured plugins with built-in */
