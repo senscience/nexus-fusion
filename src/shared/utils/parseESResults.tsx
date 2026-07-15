@@ -12,6 +12,7 @@ import {
 } from '.';
 import { convertMarkdownHandlebarStringWithData } from './markdownTemplate';
 import { parseURL } from './nexusParse';
+import { flattenNexusSource } from './nexusMetadata';
 import { ResultTableFields } from '../types/search';
 import { FilterConfigByColumnFn } from 'shared/hooks/useAccessDataForTable';
 
@@ -29,7 +30,9 @@ export const rowRender = (value: string, basePath: string) => {
 
 export function parseESResults(searchResponse: UseSearchResponse) {
   return (searchResponse.data?.hits.hits || []).map(({ _source }) => {
-    const { _original_source = {}, ...everythingElse } = _source;
+    // System metadata is nested under `_nexus` in ES documents; hoist it back to the root.
+    const flatSource = flattenNexusSource(_source as Record<string, any>);
+    const { _original_source = {}, ...everythingElse } = flatSource;
 
     const resource = {
       ...(parseJsonMaybe(_original_source) || {}),
@@ -38,7 +41,7 @@ export function parseESResults(searchResponse: UseSearchResponse) {
 
     return {
       ...resource,
-      key: _source._self,
+      key: flatSource._self,
     };
   });
 }

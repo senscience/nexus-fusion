@@ -39,7 +39,9 @@ export const getUserManager = (
     return undefined;
   }
 
-  const cacheKey = `${realm._label}||${realm._issuer}||${clientId}||${redirectHostName}||${scope || 'default'}`;
+  const cacheKey = `${realm._label}||${
+    realm._issuer
+  }||${clientId}||${redirectHostName}||${scope || 'default'}`;
   const oidcConfig = Object.freeze({
     authority: realm._issuer,
     response_type: 'id_token token',

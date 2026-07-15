@@ -6,6 +6,7 @@ import {
 } from '@bbp/nexus-sdk/es';
 
 import DropdownFilter from '../components/DropdownFilter';
+import { metaField } from '../utils/nexusMetadata';
 
 // must be explicitly set for elasticSearch, default is 10
 const RESULTS_SIZE = 10000;
@@ -28,12 +29,12 @@ const SchemaDropdownFilterContainer: React.FunctionComponent<{
         aggregations: {
           schemas: {
             filter: {
-              term: { _deprecated: deprecated },
+              term: { [metaField('_deprecated')]: deprecated },
             },
             aggregations: {
               filteredByDeprecation: {
                 terms: {
-                  field: '_constrainedBy',
+                  field: metaField('_constrainedBy'),
                   size: RESULTS_SIZE,
                 },
               },

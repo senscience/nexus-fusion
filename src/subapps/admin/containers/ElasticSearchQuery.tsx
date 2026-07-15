@@ -14,7 +14,8 @@ const DEFAULT_PAGE_SIZE = 5;
 const DEFAULT_QUERY = {
   query: {
     term: {
-      _deprecated: false,
+      // System metadata is nested under `_nexus` in Delta's Elasticsearch documents.
+      '_nexus._deprecated': false,
     },
   },
 };

@@ -5,6 +5,7 @@ import { DEFAULT_ELASTIC_SEARCH_VIEW_ID, NexusClient } from '@bbp/nexus-sdk/es';
 import DropdownFilter from '../components/DropdownFilter';
 import { TypeDropdownItem } from '../components/DropdownFilter/DropdownItem';
 import { useQuery } from 'react-query';
+import { metaField } from '../utils/nexusMetadata';
 
 // must be explicitly set for elasticSearch, default is 10
 const RESULTS_SIZE = 10000;
@@ -28,7 +29,7 @@ const fetchESVTypes = ({
       aggregations: {
         types: {
           filter: {
-            term: { _deprecated: deprecated },
+            term: { [metaField('_deprecated')]: deprecated },
           },
           aggregations: {
             filteredByDeprecation: {

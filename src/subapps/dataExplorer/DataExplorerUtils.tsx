@@ -6,6 +6,7 @@ import { notification } from 'antd';
 import { isString } from 'lodash';
 import { makeOrgProjectTuple } from '../../shared/molecules/MyDataTable/MyDataTable';
 import { TTypeOperator } from '../../shared/molecules/TypeSelector/types';
+import { readMetaFromSource } from '../../shared/utils/nexusMetadata';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../shared/store/reducers';
 import { SearchResponse } from '../../shared/types/search';
@@ -236,7 +237,7 @@ const getResultsForPredicateQuery = async (
 
   const resourcesToFetch = searchResults.hits.hits.map(matching => ({
     '@id': matching._source['@id'],
-    _project: matching._source['_project'],
+    _project: readMetaFromSource(matching._source, '_project'),
   }));
 
   const matchingResources = await fetchMultipleResources(

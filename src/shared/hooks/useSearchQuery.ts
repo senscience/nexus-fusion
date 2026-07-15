@@ -6,6 +6,7 @@ import useAsyncCall, { AsyncCall } from './useAsynCall';
 import { parseURL } from '../utils/nexusParse';
 import { SearchResponse } from '../types/search';
 import { FacetConfig, FacetType } from '../store/reducers/search';
+import { metaField } from '../utils/nexusMetadata';
 
 // TODO move to global default list
 const DEFAULT_PAGE_SIZE = 20;
@@ -69,7 +70,7 @@ export type UseSearchProps = {
 export const DEFAULT_SEARCH_PROPS = {
   pagination: { from: 0, size: DEFAULT_PAGE_SIZE },
   sort: {
-    key: '_createdAt',
+    key: metaField('_createdAt'),
     direction: SortDirection.DESCENDING,
   },
 };
@@ -98,7 +99,7 @@ export default function useSearchQuery(props: UseSearchQueryProps) {
     // TODO allow configurable query target
     // not all ES View mappings will have this property.
     const matchQuery = query
-      ? ['wildcard', '_original_source', `${query}*`]
+      ? ['wildcard', metaField('_original_source'), `${query}*`]
       : ['match_all', {}];
 
     const body = bodybuilder();
@@ -107,7 +108,7 @@ export default function useSearchQuery(props: UseSearchQueryProps) {
       // TODO upgrade typescript to enable spread arguments
       // @ts-ignore
       .filter(...matchQuery)
-      .filter('term', '_deprecated', false);
+      .filter('term', metaField('_deprecated'), false);
 
     // Sorting
     if (Array.isArray(sort)) {
