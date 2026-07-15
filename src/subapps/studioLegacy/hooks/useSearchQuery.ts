@@ -5,6 +5,7 @@ import { Resource } from '@bbp/nexus-sdk/es';
 import useAsyncCall, { AsyncCall } from '../../../shared/hooks/useAsynCall';
 import { SearchResponse } from '../../../shared/types/search';
 import { parseURL } from '../../../shared/utils/nexusParse';
+import { metaField } from '../../../shared/utils/nexusMetadata';
 
 // TODO move to global default list
 const DEFAULT_PAGE_SIZE = 20;
@@ -34,7 +35,7 @@ export type UseSearchProps = {
 export const DEFAULT_SEARCH_PROPS = {
   pagination: { from: 0, size: DEFAULT_PAGE_SIZE },
   sort: {
-    key: '_createdAt',
+    key: metaField('_createdAt'),
     direction: SortDirection.DESCENDING,
   },
 };
@@ -60,7 +61,7 @@ export default function useSearchQueryFromStudio(
     const body = bodybuilder();
 
     body
-      .filter('term', '_deprecated', false)
+      .filter('term', metaField('_deprecated'), false)
       .size(paginationSize)
       .from(paginationFrom)
       .rawOption('track_total_hits', TOTAL_HITS_TRACKING);

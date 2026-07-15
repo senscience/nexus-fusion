@@ -23,30 +23,30 @@ const StoragesContainer: React.FC<{
   }, []);
 
   const loadStorages = async () => {
-    await nexus.Storage.list(orgLabel, projectLabel)
-      .then(response => {
-        Promise.all(
-          response._results.map(storage => {
-            return Promise.all([
-              nexus.Storage.get(
-                orgLabel,
-                projectLabel,
-                encodeURIComponent(storage['@id'])
-              ),
-              nexus.Storage.statistics(
-                orgLabel,
-                projectLabel,
-                encodeURIComponent(storage['@id'])
-              ),
-            ]);
-          })
-        ).then(results => {
-          setStorages(parseResponses(results));
-        });
-      })
-      .catch(error => {
-        // fail silently
-      });
+    try {
+      const response = await nexus.Storage.list(orgLabel, projectLabel);
+      const results = await Promise.all(
+        response._results.map(storage =>
+          Promise.all([
+            nexus.Storage.get(
+              orgLabel,
+              projectLabel,
+              encodeURIComponent(storage['@id'])
+            ),
+            nexus.Storage.statistics(
+              orgLabel,
+              projectLabel,
+              encodeURIComponent(storage['@id'])
+            ),
+          ])
+        )
+      );
+      setStorages(parseResponses(results));
+    } catch (error) {
+      // Storage endpoints may be unavailable or forbidden (e.g. 403/404); fail gracefully with no storages
+      // rather than surfacing an error or leaving an unhandled rejection.
+      setStorages([]);
+    }
   };
 
   const parseResponses = (storagesData: any[][]) => {

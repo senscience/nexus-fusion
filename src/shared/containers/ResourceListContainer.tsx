@@ -9,6 +9,7 @@ import ResourceListComponent, {
 import TypeDropdownFilterContainer from './TypeDropdownFilter';
 import SchemaDropdownFilterContainer from './SchemaDropdownFilters';
 import SchemaLinkContainer from './SchemaLink';
+import { metaField, readMetaFromSource } from '../utils/nexusMetadata';
 
 // Emojis cannot be base64 encoded without URI encoding
 export const encodeShareableList = (list: ResourceBoardList) => {
@@ -127,52 +128,58 @@ const ResourceListContainer: React.FunctionComponent<{
 
     (async () => {
       const [resourcesByIdOrSelf, resourcesResults] = await Promise.allSettled([
-        nexus.View.elasticSearchQuery(
-          orgLabel,
-          projectLabel,
-          encodeURIComponent(DEFAULT_ELASTIC_SEARCH_VIEW_ID),
-          {
-            query: {
-              bool: {
-                should: [
-                  {
-                    bool: {
-                      must: [
-                        {
-                          term: {
-                            _deprecated: list.query.deprecated,
-                          },
+        // The id/self lookup is only meaningful when a search term is present. Without one, `list.query.q` is
+        // undefined and the `@id`/`_self` terms serialise to empty `{"term":{}}`, which Elasticsearch rejects.
+        list.query.q
+          ? nexus.View.elasticSearchQuery(
+              orgLabel,
+              projectLabel,
+              encodeURIComponent(DEFAULT_ELASTIC_SEARCH_VIEW_ID),
+              {
+                query: {
+                  bool: {
+                    should: [
+                      {
+                        bool: {
+                          must: [
+                            {
+                              term: {
+                                [metaField('_deprecated')]: list.query
+                                  .deprecated,
+                              },
+                            },
+                            {
+                              term: {
+                                '@id': list.query.q,
+                              },
+                            },
+                          ],
                         },
-                        {
-                          term: {
-                            '@id': list.query.q,
-                          },
+                      },
+                      {
+                        bool: {
+                          must: [
+                            {
+                              term: {
+                                [metaField('_deprecated')]: list.query
+                                  .deprecated,
+                              },
+                            },
+                            {
+                              term: {
+                                [metaField('_self')]: list.query.q,
+                              },
+                            },
+                          ],
                         },
-                      ],
-                    },
+                      },
+                    ],
                   },
-                  {
-                    bool: {
-                      must: [
-                        {
-                          term: {
-                            _deprecated: list.query.deprecated,
-                          },
-                        },
-                        {
-                          term: {
-                            _self: list.query.q,
-                          },
-                        },
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-            size: 10,
-          }
-        ),
+                },
+                size: 10,
+              }
+            )
+          : Promise.resolve({ hits: { hits: [] } }),
         nexus.Resource.list(orgLabel, projectLabel, list.query),
       ]);
       if (resourcesByIdOrSelf.status === 'fulfilled') {
@@ -184,7 +191,9 @@ const ResourceListContainer: React.FunctionComponent<{
             // @ts-ignore
             resources: hits.map(hit => {
               return {
-                ...JSON.parse(hit._source['_original_source']),
+                ...JSON.parse(
+                  readMetaFromSource(hit._source, '_original_source')
+                ),
                 '@id': hit._source['@id'],
               };
             }),

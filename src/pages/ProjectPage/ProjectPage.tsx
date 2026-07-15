@@ -17,7 +17,7 @@ import useNotification from '../../shared/hooks/useNotification';
 import ResourceListBoardContainer from '../../shared/containers/ResourceListBoardContainer';
 import ResourceCreateUploadContainer from '../../shared/containers/ResourceCreateUploadContainer';
 import StoragesContainer from '../../subapps/admin/containers/StoragesContainer';
-import QuotasContainer from '../../subapps/admin/containers/QuotasContainer';
+import ProjectStatisticsContainer from '../../subapps/admin/containers/ProjectStatisticsContainer';
 import ProjectStatsContainer from '../../subapps/admin/containers/ProjectStatsContainer';
 import ProjectToDeleteContainer from '../../subapps/admin/containers/ProjectToDeleteContainer';
 import JiraPluginProjectContainer from '../../subapps/admin/containers/JiraContainer';
@@ -322,18 +322,8 @@ const ProjectView: React.FunctionComponent = () => {
                   key: 'stats',
                   label: 'Statistics',
                   children: (
-                    <AccessControl
-                      key="quotas-access-control"
-                      path={`/${orgLabel}/${projectLabel}`}
-                      permissions={['test']}
-                      noAccessComponent={() => (
-                        <Empty>
-                          You don't have read access to quotas. Please contact
-                          the Administrator for access.
-                        </Empty>
-                      )}
-                    >
-                      <QuotasContainer
+                    <>
+                      <ProjectStatisticsContainer
                         orgLabel={orgLabel}
                         projectLabel={projectLabel}
                       />
@@ -341,7 +331,7 @@ const ProjectView: React.FunctionComponent = () => {
                         orgLabel={orgLabel}
                         projectLabel={projectLabel}
                       />
-                    </AccessControl>
+                    </>
                   ),
                 },
                 {

@@ -26,24 +26,37 @@ const QueryEditor: FC<{
   }>();
   const nexus = useNexusContext();
   const notification = useNotification();
-  const [activeKey, setActiveKey] = useState('sparql');
+  const [activeKey, setActiveKey] = useState('elasticsearch');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const viewId = match.params.viewId;
 
     const fetchAndSetActiveViewKey = async () => {
+      // No specific view: default to the Elasticsearch tab, which queries the project's main index.
       if (!viewId) {
+        setActiveKey('elasticsearch');
+        setLoading(false);
         return;
       }
       setLoading(true);
       try {
-        const view = await nexus.View.get(orgLabel, projectLabel, viewId);
-        // Show appropriate search tab
-        if ([view['@type']].flat().includes('SparqlView')) {
+        const decodedViewId = decodeURIComponent(viewId);
+        // The default Elasticsearch id is not a fetchable view resource (it now resolves to the main index), so it
+        // must not be fetched. The default SPARQL id is a real view, but its type is known too, so both default ids
+        // are resolved directly; only genuine custom views are fetched to determine their type.
+        if (decodedViewId === DEFAULT_SPARQL_VIEW_ID) {
           setActiveKey('sparql');
-        } else {
+        } else if (decodedViewId === DEFAULT_ELASTIC_SEARCH_VIEW_ID) {
           setActiveKey('elasticsearch');
+        } else {
+          const view = await nexus.View.get(orgLabel, projectLabel, viewId);
+          // Show appropriate search tab
+          setActiveKey(
+            [view['@type']].flat().includes('SparqlView')
+              ? 'sparql'
+              : 'elasticsearch'
+          );
         }
       } catch (error) {
         notification.error({

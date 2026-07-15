@@ -44,6 +44,7 @@ import { Projection } from '../components/EditTableForm';
 import { download } from '../utils/download';
 import { isNumeric, parseJsonMaybe } from '../utils/index';
 import { addColumnsForES, rowRender } from '../utils/parseESResults';
+import { flattenNexusSource, metaField } from '../utils/nexusMetadata';
 import { sparqlQueryExecutor } from '../utils/querySparqlView';
 import { CartContext } from './useDataCart';
 import PromisePool from '@supercharge/promise-pool';
@@ -234,7 +235,11 @@ export async function querySparql(
 export function parseESResults(result: any) {
   const total = result.hits.total.value || 0;
   const parsedResult = (result.hits.hits || []).map((hit: any) => {
-    const { _original_source = {}, ...everythingElse } = hit._source;
+    // System metadata is nested under `_nexus` in ES documents; hoist it back to the root so the columns and
+    // `_original_source` handling below keep working with the flat field names.
+    const { _original_source = {}, ...everythingElse } = flattenNexusSource(
+      hit._source
+    );
 
     const resource = {
       ...(parseJsonMaybe(_original_source) || {}),
@@ -273,7 +278,7 @@ export const queryES = async (
   }
   /* removed as causing issues */
   body
-    .filter('term', '_deprecated', false)
+    .filter('term', metaField('_deprecated'), false)
     .size(PAGE_SIZE)
     .from(PAGE_START)
     .rawOption('track_total_hits', TOTAL_HITS_TRACKING);

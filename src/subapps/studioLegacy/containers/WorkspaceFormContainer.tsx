@@ -19,6 +19,10 @@ import {
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import useNotification from '../../../shared/hooks/useNotification';
+import {
+  metaField,
+  readMetaFromSource,
+} from '../../../shared/utils/nexusMetadata';
 import { resourceWithoutMetadata } from './StudioContainer';
 
 type NexusSparqlError = {
@@ -180,7 +184,7 @@ const WorkspaceForm: React.FunctionComponent<WorkspaceFormProps> = ({
           bool: {
             must: [
               {
-                term: { _deprecated: false },
+                term: { [metaField('_deprecated')]: false },
               },
               {
                 term: { '@type': DASHBOARD_TYPE },
@@ -196,7 +200,9 @@ const WorkspaceForm: React.FunctionComponent<WorkspaceFormProps> = ({
           try {
             const tempDashbaord = results.hits.hits.map(hit => {
               return {
-                ...JSON.parse(hit._source['_original_source']),
+                ...JSON.parse(
+                  readMetaFromSource(hit._source, '_original_source')
+                ),
                 '@id': hit._source['@id'],
               };
             });
@@ -222,7 +228,7 @@ const WorkspaceForm: React.FunctionComponent<WorkspaceFormProps> = ({
           bool: {
             must: [
               {
-                term: { _deprecated: false },
+                term: { [metaField('_deprecated')]: false },
               },
               {
                 term: { '@type': VIEW_TYPE },
@@ -252,7 +258,9 @@ const WorkspaceForm: React.FunctionComponent<WorkspaceFormProps> = ({
         setViews(
           results.hits.hits.map(hit => {
             return {
-              ...JSON.parse(hit._source['_original_source']),
+              ...JSON.parse(
+                readMetaFromSource(hit._source, '_original_source')
+              ),
               '@id': hit._source['@id'],
             };
           })

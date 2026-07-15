@@ -11,7 +11,7 @@ export const DEFAULT_DASHBOARD_ES_VIEW_QUERY = `
 {
   "query": {
     "term": {
-      "_deprecated": false
+      "_nexus._deprecated": false
     }
   }
 }`;
