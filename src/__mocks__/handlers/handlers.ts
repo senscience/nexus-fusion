@@ -989,7 +989,6 @@ export const handlers = [
             { expanded: false, key: 'admin' },
             { expanded: false, key: 'circuit' },
             { expanded: false, key: 'image-collection-viewer' },
-            { expanded: false, key: 'jira' },
             { expanded: false, key: 'markdown' },
           ],
         },

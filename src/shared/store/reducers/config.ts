@@ -33,12 +33,6 @@ export interface ConfigState {
     mainColor: string;
   };
   dataModelsLocation: string;
-  jiraUrl: string;
-  jiraResourceCustomFieldName: string;
-  jiraResourceCustomFieldLabel: string;
-  jiraProjectCustomFieldName: string;
-  jiraProjectCustomFieldLabel: string;
-  jiraSupportedRealms?: string[];
 
   analysisPluginShowOnTypes: string[];
   analysisPluginExcludeTypes: string[];
@@ -76,11 +70,6 @@ const initialState: ConfigState = {
     searchConfigProject: DEFAULT_SEARCH_CONFIG_PROJECT,
   },
   dataModelsLocation: '',
-  jiraUrl: '',
-  jiraResourceCustomFieldName: '',
-  jiraResourceCustomFieldLabel: '',
-  jiraProjectCustomFieldName: '',
-  jiraProjectCustomFieldLabel: '',
 
   analysisPluginShowOnTypes: [],
   analysisPluginExcludeTypes: [],

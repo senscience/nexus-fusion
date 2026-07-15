@@ -46,10 +46,6 @@ const SubAppsView: React.FC<{
         to="/orgs/:orgLabel/:projectLabel/graph-analytics"
       />
       <Redirect
-        from="/admin/:orgLabel/:projectLabel/jira"
-        to="/orgs/:orgLabel/:projectLabel/jira"
-      />
-      <Redirect
         from="/admin/:orgLabel/:projectLabel"
         to="/orgs/:orgLabel/:projectLabel"
       />
